@@ -1,0 +1,10 @@
+{
+  "apps":
+    [ {
+        "ip": "127.0.0.1",
+        "port": 8080,
+        "command": "cd /Users/shifanhuang/Documents/workspace/python/ && nohup http-server &",
+        "email": ["773108248@qq.com", "732325436@qq.com"]
+      }
+    ]
+}
