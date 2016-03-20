@@ -1,10 +1,19 @@
 {
   "apps":
-    [ {
-        "ip": "127.0.0.1",
-        "port": 8080,
-        "command": "cd /Users/shifanhuang/Documents/workspace/python/ && nohup http-server &",
-        "email": ["773108248@qq.com", "732325436@qq.com"]
-      }
-    ]
+  [
+    {
+      "name": "static",
+      "ip": "127.0.0.1",
+      "port": 8080,
+      "command": "cd /Users/shifanhuang/Documents/workspace/python/ && nohup http-server &",
+      "emails": ["773108248@qq.com", "732325436@qq.com"]
+    },
+    {
+      "name":"paly test",
+      "ip": "127.0.0.1",
+      "port": 9000,
+      "command": "cd /Users/shifanhuang/Documents/workspace/java/playtest/target/universal/playtest-1.0 && nohup bin/playtest &",
+      "emails": ["773108248@qq.com"]
+    }
+  ]
 }
