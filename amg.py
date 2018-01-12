@@ -8,6 +8,10 @@ import smtplib
 import time
 import argparse
 from const import VERSION
+import sys
+
+reload(sys)
+sys.setdefaultencoding('utf-8')
 
 APP_SCHEMA = {
     'type': 'object',
@@ -15,9 +19,11 @@ APP_SCHEMA = {
         'name': {'type': 'string'},
         'ip': {'type': 'string'},
         'port': {'type': 'number'},
-        'command': {'type': 'string'}
+        'command': {'type': 'string'},
+        'subject': {'type': 'string'},
+        'msg': {'type': 'string'}
     },
-    'required': ['ip', 'port', 'command', 'name']
+    'required': ['ip', 'port', 'name', 'subject', 'msg']
 }
 
 
@@ -52,17 +58,20 @@ def send_email(user, pwd, recipient, subject, body):
     message = """From: %s\nTo: %s\nSubject: %s\n\n%s
     """ % (FROM, ", ".join(TO), subject, TEXT)
 
+
     try:
         server = smtplib.SMTP_SSL('smtp.163.com', 587)
-        server.ehlo()
-        server.starttls()
+        #server = smtplib.SMTP_SSL('smtp.qq.com', 465)
+        #server.ehlo()
+        #server.starttls()
         server.login(user, pwd)
         server.sendmail(FROM, TO, message)
         server.close()
-        print 'successfully sent the mail'
-    except BaseException, e:
-        print 'failed send email, the error is: ', e, '\n'
-        send_email(user, pwd, recipient, subject, body)
+        print(message)
+        print('successfully sent the mail')
+    except BaseException as e:
+        print('failed send email, the error is: ', e, '\n')
+        #send_email(user, pwd, recipient, subject, body)
 
 
 def getip():
@@ -78,12 +87,11 @@ def getip():
 
 def sholud_restart_app(opts):
     email_user = 'ze_wait@163.com'
-    email_pwd = 'Ze123456'
+    email_pwd = 'Ze888888'
     datenow_str = time.strftime('%Y/%m/%d %H:%M:%s')
-    SUBJECT = '[EDS Server Error]'
     ip = getip()
 
-    json_config = json.load(opts.config)
+    json_config = json.load(opts.config, encoding='utf-8')
     opts.config.close()
     map(lambda x: validate(x, APP_SCHEMA), json_config['apps'])
 
@@ -91,13 +99,15 @@ def sholud_restart_app(opts):
         sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         result = sock.connect_ex((app['ip'], app['port']))
         if result != 0:
-            send_body = """[%s](%s:%d): closed at %s
-            """ % (app['name'], ip, app['port'], datenow_str)
+            #send_body = """[%s](%s:%d): closed at %s
+            #""" % (app['name'], ip, app['port'], datenow_str)
+            send_body = app['msg'] % (app['name'], ip, app['port'], datenow_str)
+
             send_email(
                 email_user, email_pwd,
-                app['emails'], SUBJECT, send_body)
-            Popen([app['command']], shell=True)
-            print send_body
+                app['emails'], app['subject'], send_body)
+            if 'command' in app:
+                Popen([app['command']], shell=True)
 
 
 def main():
@@ -110,6 +120,14 @@ def main():
     else:
         parse.print_help()
 
+def test_send():
+    #email_user = '737250911@qq.com'
+    #email_pwd = 'hqsaqlabokuzbdif'
+    email_user = 'ze_wait@163.com'
+    email_pwd = 'Ze888888'
+    send_email(email_user, email_pwd, '773108248@qq.com', '服务器出问题', 'How To Cover Your Tracks On The Internet2008-06-25')
+
 
 if __name__ == '__main__':
     main()
+    #test_send()
