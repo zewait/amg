@@ -86,8 +86,8 @@ def getip():
 
 
 def sholud_restart_app(opts):
-    email_user = 'ze_wait@163.com'
-    email_pwd = 'Ze888888'
+    email_user = '${user}'
+    email_pwd = '${password}'
     datenow_str = time.strftime('%Y/%m/%d %H:%M:%s')
     ip = getip()
 
